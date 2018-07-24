@@ -7605,6 +7605,15 @@ class Size extends xml_components_1.XmlComponent {
     }
 }
 exports.Size = Size;
+class RTL extends xml_components_1.XmlComponent {
+    constructor() {
+        super("w:rtl");
+        this.root.push(new xml_components_1.Attributes({
+            val: true,
+        }));
+    }
+}
+exports.RTL = RTL;
 
 
 /***/ }),
@@ -28008,6 +28017,8 @@ class RunFontAttributes extends xml_components_1.XmlAttributeComponent {
         super(...arguments);
         this.xmlKeys = {
             ascii: "w:ascii",
+            cs: "w:cs",
+            eastAsia: "w:eastAsia",
             hAnsi: "w:hAnsi",
             hint: "w:hint",
         };
@@ -28018,6 +28029,8 @@ class RunFonts extends xml_components_1.XmlComponent {
         super("w:rFonts");
         this.root.push(new RunFontAttributes({
             ascii: ascii,
+            cs: ascii,
+            eastAsia: ascii,
             hAnsi: ascii,
             hint: hint,
         }));
@@ -45169,6 +45182,10 @@ class Run extends xml_components_1.XmlComponent {
     }
     size(size) {
         this.properties.push(new formatting_1.Size(size));
+        return this;
+    }
+    rtl() {
+        this.properties.push(new formatting_1.RTL());
         return this;
     }
     break() {
