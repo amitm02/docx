@@ -46707,6 +46707,18 @@ class Paragraph extends xml_components_1.XmlComponent {
         this.properties.push(new alignment_1.Alignment("right"));
         return this;
     }
+    start() {
+        this.properties.push(new alignment_1.Alignment("start"));
+        return this;
+    }
+    end() {
+        this.properties.push(new alignment_1.Alignment("end"));
+        return this;
+    }
+    distribute() {
+        this.properties.push(new alignment_1.Alignment("distribute"));
+        return this;
+    }
     justified() {
         this.properties.push(new alignment_1.Alignment("both"));
         return this;

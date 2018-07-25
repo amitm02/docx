@@ -22,6 +22,9 @@ export declare class Paragraph extends XmlComponent {
     center(): Paragraph;
     left(): Paragraph;
     right(): Paragraph;
+    start(): Paragraph;
+    end(): Paragraph;
+    distribute(): Paragraph;
     justified(): Paragraph;
     thematicBreak(): Paragraph;
     pageBreak(): Paragraph;
