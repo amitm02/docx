@@ -45227,8 +45227,8 @@ class Run extends xml_components_1.XmlComponent {
         this.properties.push(new script_1.SuperScript());
         return this;
     }
-    font(fontName) {
-        this.properties.push(new run_fonts_1.RunFonts(fontName));
+    font(fontName, hint = undefined) {
+        this.properties.push(new run_fonts_1.RunFonts(fontName, hint));
         return this;
     }
     style(styleId) {

@@ -99,8 +99,8 @@ export class Run extends XmlComponent {
         return this;
     }
 
-    public font(fontName: string): Run {
-        this.properties.push(new RunFonts(fontName));
+    public font(fontName: string, hint : string | undefined = undefined): Run {
+        this.properties.push(new RunFonts(fontName, hint));
         return this;
     }
 

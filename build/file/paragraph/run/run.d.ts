@@ -18,6 +18,6 @@ export declare class Run extends XmlComponent {
     doubleStrike(): Run;
     subScript(): Run;
     superScript(): Run;
-    font(fontName: string): Run;
+    font(fontName: string, hint?: string | undefined): Run;
     style(styleId: string): Run;
 }
