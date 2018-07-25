@@ -33451,6 +33451,7 @@ class ParagraphStyle extends Style {
     }
     size(twips) {
         this.addRunProperty(new formatting.Size(twips));
+        this.addRunProperty(new formatting.SizeCs(twips));
         return this;
     }
     bold() {
@@ -33628,6 +33629,7 @@ class CharacterStyle extends Style {
     }
     size(twips) {
         this.addRunProperty(new formatting.Size(twips));
+        this.addRunProperty(new formatting.SizeCs(twips));
         return this;
     }
 }
@@ -50038,6 +50040,7 @@ class RunPropertiesDefaults extends xml_components_1.XmlComponent {
     }
     size(size) {
         this.properties.push(new formatting_1.Size(size));
+        this.properties.push(new formatting_1.SizeCs(size));
         return this;
     }
     font(fontName) {
