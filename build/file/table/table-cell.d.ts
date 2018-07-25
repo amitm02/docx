@@ -1,4 +1,4 @@
-import { IXmlableObject, XmlComponent } from "../../file/xml-components";
+import { IXmlableObject, XmlComponent } from "file/xml-components";
 export declare enum BorderStyle {
     SINGLE = "single",
     DASH_DOT_STROKED = "dashDotStroked",

@@ -2,7 +2,7 @@
 import * as archiver from "archiver";
 import * as express from "express";
 import { Writable } from "stream";
-import { File } from "../../file";
+import { File } from "file";
 export declare class Compiler {
     private file;
     protected archive: archiver.Archiver;

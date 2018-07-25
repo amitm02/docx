@@ -1,4 +1,4 @@
-import { XmlComponent } from "../../../file/xml-components";
+import { XmlComponent } from "file/xml-components";
 import { Paragraph } from "../../paragraph";
 export declare enum FootnoteType {
     SEPERATOR = "separator",

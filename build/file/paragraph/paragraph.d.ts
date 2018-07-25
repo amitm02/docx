@@ -1,14 +1,15 @@
-import { IMediaData } from "../../file/media";
-import { Num } from "../../file/numbering/num";
-import { XmlComponent } from "../../file/xml-components";
+import { IMediaData } from "file/media";
+import { Num } from "file/numbering/num";
+import { XmlComponent } from "file/xml-components";
 import { ISpacingProperties } from "./formatting/spacing";
-import { Hyperlink } from "./links";
+import { Bookmark, Hyperlink } from "./links";
 import { PictureRun, Run, TextRun } from "./run";
 export declare class Paragraph extends XmlComponent {
     private properties;
     constructor(text?: string);
     addRun(run: Run): Paragraph;
     addHyperLink(hyperlink: Hyperlink): Paragraph;
+    addBookmark(bookmark: Bookmark): Paragraph;
     createTextRun(text: string): TextRun;
     createPictureRun(imageData: IMediaData): PictureRun;
     heading1(): Paragraph;

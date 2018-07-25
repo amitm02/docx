@@ -1,4 +1,4 @@
-import { BaseXmlComponent, XmlComponent } from "../../file/xml-components";
+import { BaseXmlComponent, XmlComponent } from "file/xml-components";
 import { DocumentDefaults } from "./defaults";
 import { ParagraphStyle } from "./style";
 export declare class Styles extends XmlComponent {

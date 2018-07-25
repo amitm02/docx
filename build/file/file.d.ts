@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { IMediaData } from "../file/media";
+import { IMediaData } from "file/media";
 import { AppProperties } from "./app-properties/app-properties";
 import { ContentTypes } from "./content-types/content-types";
 import { CoreProperties, IPropertiesOptions } from "./core-properties";
@@ -10,7 +10,7 @@ import { FootNotes } from "./footnotes";
 import { HeaderWrapper } from "./header-wrapper";
 import { Media } from "./media";
 import { Numbering } from "./numbering";
-import { Hyperlink, Paragraph, PictureRun } from "./paragraph";
+import { Bookmark, Hyperlink, Paragraph, PictureRun } from "./paragraph";
 import { Relationships } from "./relationships";
 import { Styles } from "./styles";
 import { Table } from "./table";
@@ -36,6 +36,8 @@ export declare class File {
     createImage(image: string): PictureRun;
     createImageData(imageName: string, data: Buffer, width?: number, height?: number): IMediaData;
     createHyperlink(link: string, text?: string): Hyperlink;
+    createInternalHyperLink(anchor: string, text?: string): Hyperlink;
+    createBookmark(name: string, text?: string): Bookmark;
     addSection(sectionPropertiesOptions: SectionPropertiesOptions): void;
     createFootnote(paragraph: Paragraph): void;
     createHeader(): HeaderWrapper;
