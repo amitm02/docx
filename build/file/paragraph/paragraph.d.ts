@@ -1,6 +1,6 @@
-import { IMediaData } from "../../file/media";
-import { Num } from "../../file/numbering/num";
-import { XmlComponent } from "../../file/xml-components";
+import { IMediaData } from "file/media";
+import { Num } from "file/numbering/num";
+import { XmlComponent } from "file/xml-components";
 import { ISpacingProperties } from "./formatting/spacing";
 import { Bookmark, Hyperlink } from "./links";
 import { PictureRun, Run, TextRun } from "./run";

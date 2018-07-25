@@ -1,5 +1,5 @@
-import { TableCellBorders, VerticalAlign, VMergeType, WidthType } from "../../file/table/table-cell";
-import { IXmlableObject, XmlComponent } from "../../file/xml-components";
+import { TableCellBorders, VerticalAlign, VMergeType, WidthType } from "file/table/table-cell";
+import { IXmlableObject, XmlComponent } from "file/xml-components";
 import { Paragraph } from "../paragraph";
 import { WidthTypes } from "./properties";
 export declare class Table extends XmlComponent {

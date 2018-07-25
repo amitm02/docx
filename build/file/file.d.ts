@@ -1,5 +1,5 @@
 /// <reference types="node" />
-import { IMediaData } from "../file/media";
+import { IMediaData } from "file/media";
 import { AppProperties } from "./app-properties/app-properties";
 import { ContentTypes } from "./content-types/content-types";
 import { CoreProperties, IPropertiesOptions } from "./core-properties";
