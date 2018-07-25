@@ -1,4 +1,4 @@
-import { XmlComponent } from "file/xml-components";
+import { XmlComponent } from "../../file/xml-components";
 import * as paragraph from "../paragraph/formatting";
 export declare class LevelBase extends XmlComponent {
     private readonly paragraphProperties;

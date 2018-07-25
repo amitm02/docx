@@ -1,5 +1,5 @@
-import { IMediaData } from "file/media";
-import { XmlComponent } from "file/xml-components";
+import { IMediaData } from "../../file/media";
+import { XmlComponent } from "../../file/xml-components";
 import { Paragraph, PictureRun } from "../paragraph";
 import { Table } from "../table";
 import { Body } from "./body";

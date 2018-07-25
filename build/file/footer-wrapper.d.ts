@@ -1,4 +1,4 @@
-import { XmlComponent } from "file/xml-components";
+import { XmlComponent } from "../file/xml-components";
 import { Footer } from "./footer/footer";
 import { IMediaData, Media } from "./media";
 import { Paragraph } from "./paragraph";

@@ -1,4 +1,4 @@
-import { IXmlableObject, XmlComponent } from "file/xml-components";
+import { IXmlableObject, XmlComponent } from "../../../file/xml-components";
 import { SectionProperties, SectionPropertiesOptions } from "./section-properties";
 export declare class Body extends XmlComponent {
     private defaultSection;

@@ -1,4 +1,4 @@
-import { XmlComponent } from "file/xml-components";
+import { XmlComponent } from "../../file/xml-components";
 export declare type WidthTypes = "dxa" | "pct" | "nil" | "auto";
 export declare class TableProperties extends XmlComponent {
     constructor();
