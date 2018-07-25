@@ -7605,6 +7605,15 @@ class Size extends xml_components_1.XmlComponent {
     }
 }
 exports.Size = Size;
+class SizeCs extends xml_components_1.XmlComponent {
+    constructor(size) {
+        super("w:szCs");
+        this.root.push(new xml_components_1.Attributes({
+            val: size,
+        }));
+    }
+}
+exports.SizeCs = SizeCs;
 class RTL extends xml_components_1.XmlComponent {
     constructor() {
         super("w:rtl");
@@ -45182,6 +45191,7 @@ class Run extends xml_components_1.XmlComponent {
     }
     size(size) {
         this.properties.push(new formatting_1.Size(size));
+        this.properties.push(new formatting_1.SizeCs(size));
         return this;
     }
     rtl() {

@@ -35,6 +35,9 @@ export declare class Strike extends XmlComponent {
 export declare class Size extends XmlComponent {
     constructor(size: number);
 }
+export declare class SizeCs extends XmlComponent {
+    constructor(size: number);
+}
 export declare class RTL extends XmlComponent {
     constructor();
 }
