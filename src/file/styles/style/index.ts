@@ -79,11 +79,11 @@ export class ParagraphStyle extends Style {
     }
 
     public bold(): ParagraphStyle {
-        return this.addRunProperty(new formatting.Bold());
+        return this.addRunProperty(new formatting.Bold()).addRunProperty(new formatting.BoldComplexScript());
     }
 
     public italics(): ParagraphStyle {
-        return this.addRunProperty(new formatting.Italics());
+        return this.addRunProperty(new formatting.Italics()).addRunProperty(new formatting.ItalicsComplexScript());
     }
 
     public smallCaps(): ParagraphStyle {
