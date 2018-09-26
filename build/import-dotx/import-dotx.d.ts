@@ -4,6 +4,7 @@ import { FooterReferenceType } from "../file/document/body/section-properties/fo
 import { HeaderReferenceType } from "../file/document/body/section-properties/header-reference";
 import { FooterWrapper, IDocumentFooter } from "../file/footer-wrapper";
 import { HeaderWrapper, IDocumentHeader } from "../file/header-wrapper";
+import { Styles } from "../file/styles";
 interface IDocumentRefs {
     headers: Array<{
         id: number;
@@ -23,6 +24,7 @@ export interface IDocumentTemplate {
     currentRelationshipId: number;
     headers: IDocumentHeader[];
     footers: IDocumentFooter[];
+    styles: Styles;
 }
 export declare class ImportDotx {
     private currentRelationshipId;

@@ -8,6 +8,9 @@ export declare class Bold extends XmlComponent {
 export declare class BoldComplexScript extends XmlComponent {
     constructor();
 }
+export declare class CharacterSpacing extends XmlComponent {
+    constructor(value: number);
+}
 export declare class Italics extends XmlComponent {
     constructor();
 }

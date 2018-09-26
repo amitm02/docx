@@ -4,12 +4,14 @@ import { XmlComponent } from "../../file/xml-components";
 import { Border } from "./formatting/border";
 import { IIndentAttributesProperties } from "./formatting/indent";
 import { ISpacingProperties } from "./formatting/spacing";
+import { LeaderType } from "./formatting/tab-stop";
 import { Bookmark, Hyperlink } from "./links";
 import { ParagraphProperties } from "./properties";
 import { PictureRun, Run, TextRun } from "./run";
 export declare class Paragraph extends XmlComponent {
     private readonly properties;
     constructor(text?: string);
+    readonly paragraphProperties: ParagraphProperties;
     readonly Borders: Border;
     createBorder(): Paragraph;
     addRun(run: Run): Paragraph;
@@ -34,10 +36,10 @@ export declare class Paragraph extends XmlComponent {
     thematicBreak(): Paragraph;
     pageBreak(): Paragraph;
     pageBreakBefore(): Paragraph;
-    maxRightTabStop(): Paragraph;
-    leftTabStop(position: number): Paragraph;
-    rightTabStop(position: number): Paragraph;
-    centerTabStop(position: number): Paragraph;
+    maxRightTabStop(leader?: LeaderType): Paragraph;
+    leftTabStop(position: number, leader?: LeaderType): Paragraph;
+    rightTabStop(position: number, leader?: LeaderType): Paragraph;
+    centerTabStop(position: number, leader?: LeaderType): Paragraph;
     bullet(indentLevel?: number): Paragraph;
     setNumbering(numbering: Num, indentLevel: number): Paragraph;
     setCustomNumbering(numberId: number, indentLevel: number): Paragraph;
@@ -49,5 +51,5 @@ export declare class Paragraph extends XmlComponent {
     referenceFootnote(id: number): Paragraph;
     addRunToFront(run: Run): Paragraph;
     bidirectional(): Paragraph;
-    readonly Properties: ParagraphProperties;
+    addTabStop(run: Run): Paragraph;
 }

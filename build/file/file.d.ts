@@ -12,8 +12,10 @@ import { Image, Media } from "./media";
 import { Numbering } from "./numbering";
 import { Bookmark, Hyperlink, Paragraph } from "./paragraph";
 import { Relationships } from "./relationships";
+import { Settings } from "./settings";
 import { Styles } from "./styles";
 import { Table } from "./table";
+import { TableOfContents } from "./table-of-contents";
 export declare class File {
     private currentRelationshipId;
     private readonly document;
@@ -25,10 +27,12 @@ export declare class File {
     private readonly media;
     private readonly fileRelationships;
     private readonly footNotes;
+    private readonly settings;
     private readonly contentTypes;
     private readonly appProperties;
     private styles;
     constructor(options?: IPropertiesOptions, sectionPropertiesOptions?: SectionPropertiesOptions, fileProperties?: IFileProperties);
+    addTableOfContents(toc: TableOfContents): void;
     addParagraph(paragraph: Paragraph): File;
     createParagraph(text?: string): Paragraph;
     addTable(table: Table): void;
@@ -45,6 +49,7 @@ export declare class File {
     createFirstPageHeader(): HeaderWrapper;
     getFooterByReferenceNumber(refId: number): FooterWrapper;
     getHeaderByReferenceNumber(refId: number): HeaderWrapper;
+    verifyUpdateFields(): void;
     protected addHeaderToDocument(header: HeaderWrapper, type?: HeaderReferenceType): void;
     protected addFooterToDocument(footer: FooterWrapper, type?: FooterReferenceType): void;
     protected addDefaultRelationships(): void;
@@ -62,4 +67,5 @@ export declare class File {
     readonly ContentTypes: ContentTypes;
     readonly AppProperties: AppProperties;
     readonly FootNotes: FootNotes;
+    readonly Settings: Settings;
 }

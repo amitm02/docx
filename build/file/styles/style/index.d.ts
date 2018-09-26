@@ -14,8 +14,8 @@ export declare class ParagraphStyle extends Style {
     private readonly paragraphProperties;
     private readonly runProperties;
     constructor(styleId: string, name?: string);
-    addParagraphProperty(property: XmlComponent): void;
-    addRunProperty(property: XmlComponent): void;
+    addParagraphProperty(property: XmlComponent): ParagraphStyle;
+    addRunProperty(property: XmlComponent): ParagraphStyle;
     basedOn(parentId: string): ParagraphStyle;
     quickFormat(): ParagraphStyle;
     next(nextId: string): ParagraphStyle;
@@ -31,6 +31,7 @@ export declare class ParagraphStyle extends Style {
     underline(underlineType?: string, color?: string): ParagraphStyle;
     color(color: string): ParagraphStyle;
     font(fontName: string): ParagraphStyle;
+    characterSpacing(value: number): ParagraphStyle;
     center(): ParagraphStyle;
     left(): ParagraphStyle;
     right(): ParagraphStyle;
@@ -74,7 +75,7 @@ export declare class CharacterStyle extends Style {
     private readonly runProperties;
     constructor(styleId: string, name?: string);
     basedOn(parentId: string): CharacterStyle;
-    addRunProperty(property: XmlComponent): void;
+    addRunProperty(property: XmlComponent): CharacterStyle;
     color(color: string): CharacterStyle;
     underline(underlineType?: string, color?: string): CharacterStyle;
     size(twips: number): CharacterStyle;

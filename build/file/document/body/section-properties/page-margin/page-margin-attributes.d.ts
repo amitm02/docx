@@ -7,6 +7,7 @@ export interface IPageMarginAttributes {
     header?: number;
     footer?: number;
     gutter?: number;
+    mirror?: boolean;
 }
 export declare class PageMarginAttributes extends XmlAttributeComponent<IPageMarginAttributes> {
     protected xmlKeys: {
@@ -17,5 +18,6 @@ export declare class PageMarginAttributes extends XmlAttributeComponent<IPageMar
         header: string;
         footer: string;
         gutter: string;
+        mirror: string;
     };
 }

@@ -1,29 +1,32 @@
 import { XmlAttributeComponent, XmlComponent } from "../../../file/xml-components";
 export declare class TabStop extends XmlComponent {
-    constructor(tab: Tab);
+    constructor(tab: TabStopItem);
 }
 export declare type TabValue = "left" | "right" | "center" | "bar" | "clear" | "decimal" | "end" | "num" | "start";
+export declare type LeaderType = "dot" | "hyphen" | "middleDot" | "none" | "underscore";
 export declare class TabAttributes extends XmlAttributeComponent<{
     val: TabValue;
     pos: string | number;
+    leader?: LeaderType;
 }> {
     protected xmlKeys: {
         val: string;
         pos: string;
+        leader: string;
     };
 }
-export declare class Tab extends XmlComponent {
-    constructor(value: TabValue, position: string | number);
+export declare class TabStopItem extends XmlComponent {
+    constructor(value: TabValue, position: string | number, leader?: LeaderType);
 }
 export declare class MaxRightTabStop extends TabStop {
-    constructor();
+    constructor(leader?: LeaderType);
 }
 export declare class LeftTabStop extends TabStop {
-    constructor(position: number);
+    constructor(position: number, leader?: LeaderType);
 }
 export declare class RightTabStop extends TabStop {
-    constructor(position: number);
+    constructor(position: number, leader?: LeaderType);
 }
 export declare class CenterTabStop extends TabStop {
-    constructor(position: number);
+    constructor(position: number, leader?: LeaderType);
 }
