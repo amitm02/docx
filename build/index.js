@@ -6871,6 +6871,15 @@ class Spacing extends xml_components_1.XmlComponent {
     }
 }
 exports.Spacing = Spacing;
+class ContextualSpacing extends xml_components_1.XmlComponent {
+    constructor(value) {
+        super("w:contextualSpacing");
+        this.root.push(new xml_components_1.Attributes({
+            val: value === false ? 0 : 1,
+        }));
+    }
+}
+exports.ContextualSpacing = ContextualSpacing;
 
 
 /***/ }),
@@ -7158,6 +7167,10 @@ class Paragraph extends xml_components_1.XmlComponent {
     }
     spacing(params) {
         this.properties.push(new spacing_1.Spacing(params));
+        return this;
+    }
+    contextualSpacing(value) {
+        this.properties.push(new spacing_1.ContextualSpacing(value));
         return this;
     }
     keepNext() {

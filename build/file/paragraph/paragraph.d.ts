@@ -46,6 +46,7 @@ export declare class Paragraph extends XmlComponent {
     style(styleId: string): Paragraph;
     indent(attrs: IIndentAttributesProperties): Paragraph;
     spacing(params: ISpacingProperties): Paragraph;
+    contextualSpacing(value: boolean): Paragraph;
     keepNext(): Paragraph;
     keepLines(): Paragraph;
     referenceFootnote(id: number): Paragraph;

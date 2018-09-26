@@ -8,3 +8,6 @@ export interface ISpacingProperties {
 export declare class Spacing extends XmlComponent {
     constructor(opts: ISpacingProperties);
 }
+export declare class ContextualSpacing extends XmlComponent {
+    constructor(value: boolean);
+}
