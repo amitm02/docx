@@ -11,10 +11,12 @@ import { Image, Media } from "./media";
 import { Numbering } from "./numbering";
 import { Bookmark, Hyperlink, Paragraph } from "./paragraph";
 import { Relationships } from "./relationships";
+import { Settings } from "./settings";
 import { Styles } from "./styles";
 import { ExternalStylesFactory } from "./styles/external-styles-factory";
 import { DefaultStylesFactory } from "./styles/factory";
 import { Table } from "./table";
+import { TableOfContents } from "./table-of-contents";
 
 export class File {
     private currentRelationshipId: number = 1;
@@ -28,6 +30,7 @@ export class File {
     private readonly media: Media;
     private readonly fileRelationships: Relationships;
     private readonly footNotes: FootNotes;
+    private readonly settings: Settings;
     private readonly contentTypes: ContentTypes;
     private readonly appProperties: AppProperties;
     private styles: Styles;
@@ -50,7 +53,17 @@ export class File {
         this.footNotes = new FootNotes();
         this.contentTypes = new ContentTypes();
 
-        if (options.externalStyles) {
+        if (fileProperties.template) {
+            this.currentRelationshipId = fileProperties.template.currentRelationshipId + 1;
+        }
+
+        // set up styles
+        if (fileProperties.template && options.externalStyles) {
+            throw Error("can not use both template and external styles");
+        }
+        if (fileProperties.template) {
+            this.styles = fileProperties.template.styles;
+        } else if (options.externalStyles) {
             const stylesFactory = new ExternalStylesFactory();
             this.styles = stylesFactory.newInstance(options.externalStyles);
         } else {
@@ -59,10 +72,6 @@ export class File {
         }
 
         this.addDefaultRelationships();
-
-        if (fileProperties.template) {
-            this.currentRelationshipId = fileProperties.template.currentRelationshipId + 1;
-        }
 
         if (fileProperties.template && fileProperties.template.headers) {
             for (const templateHeader of fileProperties.template.headers) {
@@ -93,6 +102,11 @@ export class File {
         };
 
         this.document = new Document(sectionPropertiesOptions);
+        this.settings = new Settings();
+    }
+
+    public addTableOfContents(toc: TableOfContents): void {
+        this.document.addTableOfContents(toc);
     }
 
     public addParagraph(paragraph: Paragraph): File {
@@ -199,6 +213,12 @@ export class File {
         throw new Error(`There is no header with given reference id ${refId}`);
     }
 
+    public verifyUpdateFields(): void {
+        if (this.document.getTablesOfContents().length) {
+            this.settings.addUpdateFields();
+        }
+    }
+
     protected addHeaderToDocument(header: HeaderWrapper, type: HeaderReferenceType = HeaderReferenceType.DEFAULT): void {
         this.headers.push({ header, type });
         this.docRelationships.createRelationship(
@@ -234,6 +254,22 @@ export class File {
             3,
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties",
             "docProps/app.xml",
+        );
+
+        this.docRelationships.createRelationship(
+            this.currentRelationshipId++,
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles",
+            "styles.xml",
+        );
+        this.docRelationships.createRelationship(
+            this.currentRelationshipId++,
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering",
+            "numbering.xml",
+        );
+        this.docRelationships.createRelationship(
+            this.currentRelationshipId++,
+            "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes",
+            "footnotes.xml",
         );
     }
 
@@ -295,5 +331,9 @@ export class File {
 
     public get FootNotes(): FootNotes {
         return this.footNotes;
+    }
+
+    public get Settings(): Settings {
+        return this.settings;
     }
 }
