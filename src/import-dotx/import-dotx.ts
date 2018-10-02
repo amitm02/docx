@@ -20,6 +20,7 @@ const schemeToType = {
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/header": "header",
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer": "footer",
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image": "image",
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink": "hyperlink",
 };
 
 interface IDocumentRefs {
@@ -29,8 +30,8 @@ interface IDocumentRefs {
 
 interface IRelationshipFileInfo {
     id: number;
-    targetFile: string;
-    type: "header" | "footer" | "image";
+    target: string;
+    type: "header" | "footer" | "image" | "hyperlink";
 }
 
 // Document Template
@@ -70,7 +71,7 @@ export class ImportDotx {
                 throw new Error(`Can not find target file for id ${headerRef.id}`);
             }
 
-            const xmlData = await zipContent.files[`word/${relationFileInfo.targetFile}`].async("text");
+            const xmlData = await zipContent.files[`word/${relationFileInfo.target}`].async("text");
             const xmlObj = fastXmlParser.parse(xmlData, importParseOptions);
 
             const importedComp = convertToXmlComponent(headerKey, xmlObj[headerKey]) as ImportedXmlComponent;
@@ -87,7 +88,7 @@ export class ImportDotx {
             if (relationFileInfo === null || !relationFileInfo) {
                 throw new Error(`Can not find target file for id ${footerRef.id}`);
             }
-            const xmlData = await zipContent.files[`word/${relationFileInfo.targetFile}`].async("text");
+            const xmlData = await zipContent.files[`word/${relationFileInfo.target}`].async("text");
             const xmlObj = fastXmlParser.parse(xmlData, importParseOptions);
             const importedComp = convertToXmlComponent(footerKey, xmlObj[footerKey]) as ImportedXmlComponent;
 
@@ -106,14 +107,19 @@ export class ImportDotx {
         wrapper: HeaderWrapper | FooterWrapper,
     ): Promise<void> {
         let wrapperImagesReferences: IRelationshipFileInfo[] = [];
-        const refFile = zipContent.files[`word/_rels/${relationFile.targetFile}.rels`];
+        let hyperLinkReferences: IRelationshipFileInfo[] = [];
+        const refFile = zipContent.files[`word/_rels/${relationFile.target}.rels`];
         if (refFile) {
             const xmlRef = await refFile.async("text");
             wrapperImagesReferences = this.findReferenceFiles(xmlRef).filter((r) => r.type === "image");
+            hyperLinkReferences = this.findReferenceFiles(xmlRef).filter((r) => r.type === "hyperlink");
         }
         for (const r of wrapperImagesReferences) {
-            const buffer = await zipContent.files[`word/${r.targetFile}`].async("nodebuffer");
+            const buffer = await zipContent.files[`word/${r.target}`].async("nodebuffer");
             wrapper.addImageRelationship(buffer, r.id);
+        }
+        for (const r of hyperLinkReferences) {
+            wrapper.addHyperlinkRelationship(r.target, r.id, "External");
         }
     }
 
@@ -127,7 +133,7 @@ export class ImportDotx {
                 return {
                     id: this.parseRefId(item._attr.Id),
                     type: schemeToType[item._attr.Type],
-                    targetFile: item._attr.Target,
+                    target: item._attr.Target,
                 };
             })
             .filter((item) => item.type !== null);
@@ -135,12 +141,21 @@ export class ImportDotx {
     }
 
     public extractDocumentRefs(xmlData: string): IDocumentRefs {
+        interface IAttributedXML {
+            _attr: object;
+        }
         const xmlObj = fastXmlParser.parse(xmlData, importParseOptions);
         const sectionProp = xmlObj["w:document"]["w:body"]["w:sectPr"];
 
-        const headersXmlArray = Array.isArray(sectionProp["w:headerReference"])
-            ? sectionProp["w:headerReference"]
-            : [sectionProp["w:headerReference"]];
+        const headerProps: undefined | IAttributedXML | IAttributedXML[] = sectionProp["w:headerReference"];
+        let headersXmlArray: IAttributedXML[];
+        if (headerProps === undefined) {
+            headersXmlArray = [];
+        } else if (Array.isArray(headerProps)) {
+            headersXmlArray = headerProps;
+        } else {
+            headersXmlArray = [headerProps];
+        }
         const headers = headersXmlArray.map((item) => {
             return {
                 type: item._attr["w:type"],
@@ -148,9 +163,16 @@ export class ImportDotx {
             };
         });
 
-        const footersXmlArray = Array.isArray(sectionProp["w:footerReference"])
-            ? sectionProp["w:footerReference"]
-            : [sectionProp["w:footerReference"]];
+        const footerProps: undefined | IAttributedXML | IAttributedXML[] = sectionProp["w:footerReference"];
+        let footersXmlArray: IAttributedXML[];
+        if (footerProps === undefined) {
+            footersXmlArray = [];
+        } else if (Array.isArray(footerProps)) {
+            footersXmlArray = footerProps;
+        } else {
+            footersXmlArray = [footerProps];
+        }
+
         const footers = footersXmlArray.map((item) => {
             return {
                 type: item._attr["w:type"],
