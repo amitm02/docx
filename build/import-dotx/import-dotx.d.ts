@@ -25,14 +25,16 @@ export interface IDocumentTemplate {
     headers: IDocumentHeader[];
     footers: IDocumentFooter[];
     styles: Styles;
+    titlePageIsDefined: boolean;
 }
 export declare class ImportDotx {
     private currentRelationshipId;
     constructor();
     extract(data: Buffer): Promise<IDocumentTemplate>;
-    addImagesToWrapper(relationFile: IRelationshipFileInfo, zipContent: JSZip, wrapper: HeaderWrapper | FooterWrapper): Promise<void>;
+    addRelationToWrapper(relationFile: IRelationshipFileInfo, zipContent: JSZip, wrapper: HeaderWrapper | FooterWrapper): Promise<void>;
     findReferenceFiles(xmlData: string): IRelationshipFileInfo[];
     extractDocumentRefs(xmlData: string): IDocumentRefs;
+    titlePageIsDefined(xmlData: string): boolean;
     parseRefId(str: string): number;
 }
 export {};

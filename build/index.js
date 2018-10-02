@@ -44192,6 +44192,7 @@ class ImportDotx {
             const styles = stylesFactory.newInstance(stylesContent);
             const documentContent = zipContent.files["word/document.xml"];
             const documentRefs = this.extractDocumentRefs(yield documentContent.async("text"));
+            const titlePageIsDefined = this.titlePageIsDefined(yield documentContent.async("text"));
             const relationshipContent = zipContent.files["word/_rels/document.xml.rels"];
             const documentRelationships = this.findReferenceFiles(yield relationshipContent.async("text"));
             const headers = [];
@@ -44205,7 +44206,7 @@ class ImportDotx {
                 const xmlObj = fastXmlParser.parse(xmlData, importParseOptions);
                 const importedComp = xml_components_1.convertToXmlComponent(headerKey, xmlObj[headerKey]);
                 const header = new header_wrapper_1.HeaderWrapper(this.currentRelationshipId++, importedComp);
-                yield this.addImagesToWrapper(relationFileInfo, zipContent, header);
+                yield this.addRelationToWrapper(relationFileInfo, zipContent, header);
                 headers.push({ type: headerRef.type, header });
             }
             const footers = [];
@@ -44219,14 +44220,20 @@ class ImportDotx {
                 const xmlObj = fastXmlParser.parse(xmlData, importParseOptions);
                 const importedComp = xml_components_1.convertToXmlComponent(footerKey, xmlObj[footerKey]);
                 const footer = new footer_wrapper_1.FooterWrapper(this.currentRelationshipId++, importedComp);
-                yield this.addImagesToWrapper(relationFileInfo, zipContent, footer);
+                yield this.addRelationToWrapper(relationFileInfo, zipContent, footer);
                 footers.push({ type: footerRef.type, footer });
             }
-            const templateDocument = { headers, footers, currentRelationshipId: this.currentRelationshipId, styles };
+            const templateDocument = {
+                headers,
+                footers,
+                currentRelationshipId: this.currentRelationshipId,
+                styles,
+                titlePageIsDefined,
+            };
             return templateDocument;
         });
     }
-    addImagesToWrapper(relationFile, zipContent, wrapper) {
+    addRelationToWrapper(relationFile, zipContent, wrapper) {
         return __awaiter(this, void 0, void 0, function* () {
             let wrapperImagesReferences = [];
             let hyperLinkReferences = [];
@@ -44299,6 +44306,11 @@ class ImportDotx {
             };
         });
         return { headers, footers };
+    }
+    titlePageIsDefined(xmlData) {
+        const xmlObj = fastXmlParser.parse(xmlData, importParseOptions);
+        const sectionProp = xmlObj["w:document"]["w:body"]["w:sectPr"];
+        return sectionProp["w:titlePg"] !== undefined;
     }
     parseRefId(str) {
         const match = /^rId(\d+)$/.exec(str);
