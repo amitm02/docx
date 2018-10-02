@@ -22,6 +22,7 @@ export declare class HeaderWrapper {
     createTable(rows: number, cols: number): Table;
     addChildElement(childElement: XmlComponent | string): void;
     addImageRelationship(image: Buffer, refId: number, width?: number, height?: number): IMediaData;
+    addHyperlinkRelationship(target: string, refId: number, targetMode?: "External" | undefined): void;
     createImage(image: Buffer, width?: number, height?: number): void;
     addImage(image: Image): HeaderWrapper;
     readonly Header: Header;

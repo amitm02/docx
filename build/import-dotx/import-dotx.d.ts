@@ -17,8 +17,8 @@ interface IDocumentRefs {
 }
 interface IRelationshipFileInfo {
     id: number;
-    targetFile: string;
-    type: "header" | "footer" | "image";
+    target: string;
+    type: "header" | "footer" | "image" | "hyperlink";
 }
 export interface IDocumentTemplate {
     currentRelationshipId: number;

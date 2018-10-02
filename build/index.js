@@ -7474,6 +7474,9 @@ class FooterWrapper {
         this.relationships.createRelationship(refId, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image", `media/${mediaData.fileName}`);
         return mediaData;
     }
+    addHyperlinkRelationship(target, refId, targetMode) {
+        this.relationships.createRelationship(refId, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", target, targetMode);
+    }
     createImage(image, width, height) {
         const mediaData = this.addImageRelationship(image, this.relationships.RelationshipCount, width, height);
         this.addImage(new media_1.Image(new paragraph_1.ImageParagraph(mediaData)));
@@ -7568,6 +7571,9 @@ class HeaderWrapper {
         const mediaData = this.media.addMedia(image, refId, width, height);
         this.relationships.createRelationship(refId, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image", `media/${mediaData.fileName}`);
         return mediaData;
+    }
+    addHyperlinkRelationship(target, refId, targetMode) {
+        this.relationships.createRelationship(refId, "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink", target, targetMode);
     }
     createImage(image, width, height) {
         const mediaData = this.addImageRelationship(image, this.relationships.RelationshipCount, width, height);
@@ -44172,6 +44178,7 @@ const schemeToType = {
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/header": "header",
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer": "footer",
     "http://schemas.openxmlformats.org/officeDocument/2006/relationships/image": "image",
+    "http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink": "hyperlink",
 };
 class ImportDotx {
     constructor() {
@@ -44194,7 +44201,7 @@ class ImportDotx {
                 if (relationFileInfo === null || !relationFileInfo) {
                     throw new Error(`Can not find target file for id ${headerRef.id}`);
                 }
-                const xmlData = yield zipContent.files[`word/${relationFileInfo.targetFile}`].async("text");
+                const xmlData = yield zipContent.files[`word/${relationFileInfo.target}`].async("text");
                 const xmlObj = fastXmlParser.parse(xmlData, importParseOptions);
                 const importedComp = xml_components_1.convertToXmlComponent(headerKey, xmlObj[headerKey]);
                 const header = new header_wrapper_1.HeaderWrapper(this.currentRelationshipId++, importedComp);
@@ -44208,7 +44215,7 @@ class ImportDotx {
                 if (relationFileInfo === null || !relationFileInfo) {
                     throw new Error(`Can not find target file for id ${footerRef.id}`);
                 }
-                const xmlData = yield zipContent.files[`word/${relationFileInfo.targetFile}`].async("text");
+                const xmlData = yield zipContent.files[`word/${relationFileInfo.target}`].async("text");
                 const xmlObj = fastXmlParser.parse(xmlData, importParseOptions);
                 const importedComp = xml_components_1.convertToXmlComponent(footerKey, xmlObj[footerKey]);
                 const footer = new footer_wrapper_1.FooterWrapper(this.currentRelationshipId++, importedComp);
@@ -44222,14 +44229,19 @@ class ImportDotx {
     addImagesToWrapper(relationFile, zipContent, wrapper) {
         return __awaiter(this, void 0, void 0, function* () {
             let wrapperImagesReferences = [];
-            const refFile = zipContent.files[`word/_rels/${relationFile.targetFile}.rels`];
+            let hyperLinkReferences = [];
+            const refFile = zipContent.files[`word/_rels/${relationFile.target}.rels`];
             if (refFile) {
                 const xmlRef = yield refFile.async("text");
                 wrapperImagesReferences = this.findReferenceFiles(xmlRef).filter((r) => r.type === "image");
+                hyperLinkReferences = this.findReferenceFiles(xmlRef).filter((r) => r.type === "hyperlink");
             }
             for (const r of wrapperImagesReferences) {
-                const buffer = yield zipContent.files[`word/${r.targetFile}`].async("nodebuffer");
+                const buffer = yield zipContent.files[`word/${r.target}`].async("nodebuffer");
                 wrapper.addImageRelationship(buffer, r.id);
+            }
+            for (const r of hyperLinkReferences) {
+                wrapper.addHyperlinkRelationship(r.target, r.id, "External");
             }
         });
     }
@@ -44243,7 +44255,7 @@ class ImportDotx {
             return {
                 id: this.parseRefId(item._attr.Id),
                 type: schemeToType[item._attr.Type],
-                targetFile: item._attr.Target,
+                target: item._attr.Target,
             };
         })
             .filter((item) => item.type !== null);
@@ -44252,18 +44264,34 @@ class ImportDotx {
     extractDocumentRefs(xmlData) {
         const xmlObj = fastXmlParser.parse(xmlData, importParseOptions);
         const sectionProp = xmlObj["w:document"]["w:body"]["w:sectPr"];
-        const headersXmlArray = Array.isArray(sectionProp["w:headerReference"])
-            ? sectionProp["w:headerReference"]
-            : [sectionProp["w:headerReference"]];
+        const headerProps = sectionProp["w:headerReference"];
+        let headersXmlArray;
+        if (headerProps === undefined) {
+            headersXmlArray = [];
+        }
+        else if (Array.isArray(headerProps)) {
+            headersXmlArray = headerProps;
+        }
+        else {
+            headersXmlArray = [headerProps];
+        }
         const headers = headersXmlArray.map((item) => {
             return {
                 type: item._attr["w:type"],
                 id: this.parseRefId(item._attr["r:id"]),
             };
         });
-        const footersXmlArray = Array.isArray(sectionProp["w:footerReference"])
-            ? sectionProp["w:footerReference"]
-            : [sectionProp["w:footerReference"]];
+        const footerProps = sectionProp["w:footerReference"];
+        let footersXmlArray;
+        if (footerProps === undefined) {
+            footersXmlArray = [];
+        }
+        else if (Array.isArray(footerProps)) {
+            footersXmlArray = footerProps;
+        }
+        else {
+            footersXmlArray = [footerProps];
+        }
         const footers = footersXmlArray.map((item) => {
             return {
                 type: item._attr["w:type"],
