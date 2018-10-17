@@ -2,7 +2,13 @@ import { AppProperties } from "./app-properties/app-properties";
 import { ContentTypes } from "./content-types/content-types";
 import { CoreProperties, IPropertiesOptions } from "./core-properties";
 import { Document } from "./document";
-import { FooterReferenceType, HeaderReference, HeaderReferenceType, SectionPropertiesOptions } from "./document/body/section-properties";
+import {
+    FooterReferenceType,
+    HeaderReference,
+    HeaderReferenceType,
+    IHeaderFooterGroup,
+    SectionPropertiesOptions,
+} from "./document/body/section-properties";
 import { IFileProperties } from "./file-properties";
 import { FooterWrapper, IDocumentFooter } from "./footer-wrapper";
 import { FootNotes } from "./footnotes";
@@ -91,14 +97,8 @@ export class File {
 
         sectionPropertiesOptions = {
             ...sectionPropertiesOptions,
-            headers: this.headers.map((header) => ({
-                headerId: header.header.Header.ReferenceId,
-                headerType: header.type,
-            })),
-            footers: this.footers.map((footer) => ({
-                footerId: footer.footer.Footer.ReferenceId,
-                footerType: footer.type,
-            })),
+            headers: this.groupHeaders(this.headers, sectionPropertiesOptions.headers),
+            footers: this.groupFooters(this.footers, sectionPropertiesOptions.footers),
         };
 
         this.document = new Document(sectionPropertiesOptions);
@@ -219,7 +219,7 @@ export class File {
         }
     }
 
-    protected addHeaderToDocument(header: HeaderWrapper, type: HeaderReferenceType = HeaderReferenceType.DEFAULT): void {
+    private addHeaderToDocument(header: HeaderWrapper, type: HeaderReferenceType = HeaderReferenceType.DEFAULT): void {
         this.headers.push({ header, type });
         this.docRelationships.createRelationship(
             header.Header.ReferenceId,
@@ -229,7 +229,7 @@ export class File {
         this.contentTypes.addHeader(this.headers.length);
     }
 
-    protected addFooterToDocument(footer: FooterWrapper, type: FooterReferenceType = FooterReferenceType.DEFAULT): void {
+    private addFooterToDocument(footer: FooterWrapper, type: FooterReferenceType = FooterReferenceType.DEFAULT): void {
         this.footers.push({ footer, type });
         this.docRelationships.createRelationship(
             footer.Footer.ReferenceId,
@@ -239,7 +239,7 @@ export class File {
         this.contentTypes.addFooter(this.footers.length);
     }
 
-    protected addDefaultRelationships(): void {
+    private addDefaultRelationships(): void {
         this.fileRelationships.createRelationship(
             1,
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument",
@@ -271,6 +271,76 @@ export class File {
             "http://schemas.openxmlformats.org/officeDocument/2006/relationships/footnotes",
             "footnotes.xml",
         );
+    }
+
+    private groupHeaders(headers: IDocumentHeader[], group: IHeaderFooterGroup<HeaderWrapper> = {}): IHeaderFooterGroup<HeaderWrapper> {
+        let newGroup = group;
+
+        for (const header of headers) {
+            switch (header.type) {
+                case HeaderReferenceType.DEFAULT:
+                    newGroup = {
+                        ...newGroup,
+                        default: header.header,
+                    };
+                    break;
+                case HeaderReferenceType.FIRST:
+                    newGroup = {
+                        ...newGroup,
+                        first: header.header,
+                    };
+                    break;
+                case HeaderReferenceType.EVEN:
+                    newGroup = {
+                        ...newGroup,
+                        even: header.header,
+                    };
+                    break;
+                default:
+                    newGroup = {
+                        ...newGroup,
+                        default: header.header,
+                    };
+                    break;
+            }
+        }
+
+        return newGroup;
+    }
+
+    private groupFooters(footers: IDocumentFooter[], group: IHeaderFooterGroup<FooterWrapper> = {}): IHeaderFooterGroup<FooterWrapper> {
+        let newGroup = group;
+
+        for (const footer of footers) {
+            switch (footer.type) {
+                case FooterReferenceType.DEFAULT:
+                    newGroup = {
+                        ...newGroup,
+                        default: footer.footer,
+                    };
+                    break;
+                case FooterReferenceType.FIRST:
+                    newGroup = {
+                        ...newGroup,
+                        first: footer.footer,
+                    };
+                    break;
+                case FooterReferenceType.EVEN:
+                    newGroup = {
+                        ...newGroup,
+                        even: footer.footer,
+                    };
+                    break;
+                default:
+                    newGroup = {
+                        ...newGroup,
+                        default: footer.footer,
+                    };
+                    break;
+            }
+        }
+
+        return newGroup;
     }
 
     public get Document(): Document {
