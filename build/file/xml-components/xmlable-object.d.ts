@@ -1,6 +1,7 @@
+export interface IXmlAttribute {
+    [key: string]: string | number | boolean;
+}
 export interface IXmlableObject extends Object {
-    _attr?: {
-        [key: string]: string | number | boolean;
-    };
+    _attr?: IXmlAttribute;
 }
 export declare const WORKAROUND3 = "";

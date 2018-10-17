@@ -1,21 +1,31 @@
 import { XmlComponent } from "../../../../file/xml-components";
+import { FooterWrapper } from "../../../footer-wrapper";
+import { HeaderWrapper } from "../../../header-wrapper";
 import { IPageBordersOptions, IPageNumberTypeAttributes } from "./";
 import { IColumnsAttributes } from "./columns/columns-attributes";
 import { IDocGridAttributesProperties } from "./doc-grid/doc-grid-attributes";
-import { IFooterOptions } from "./footer-reference/footer-reference";
-import { IHeaderOptions } from "./header-reference/header-reference";
 import { IPageMarginAttributes } from "./page-margin/page-margin-attributes";
 import { IPageSizeAttributes } from "./page-size/page-size-attributes";
+export interface IHeaderFooterGroup<T> {
+    default?: T;
+    first?: T;
+    even?: T;
+}
 interface IHeadersOptions {
-    headers?: IHeaderOptions[];
+    headers?: IHeaderFooterGroup<HeaderWrapper>;
 }
 interface IFootersOptions {
-    footers?: IFooterOptions[];
+    footers?: IHeaderFooterGroup<FooterWrapper>;
 }
-export declare type SectionPropertiesOptions = IPageSizeAttributes & IPageMarginAttributes & IColumnsAttributes & IDocGridAttributesProperties & IHeadersOptions & IFootersOptions & IPageNumberTypeAttributes & IPageBordersOptions;
+interface ITitlePageOptions {
+    titlePage?: boolean;
+}
+export declare type SectionPropertiesOptions = IPageSizeAttributes & IPageMarginAttributes & IColumnsAttributes & IDocGridAttributesProperties & IHeadersOptions & IFootersOptions & IPageNumberTypeAttributes & IPageBordersOptions & ITitlePageOptions;
 export declare class SectionProperties extends XmlComponent {
     private readonly options;
     constructor(options?: SectionPropertiesOptions);
+    private addHeaders;
+    private addFooters;
     readonly Options: SectionPropertiesOptions;
 }
 export {};
